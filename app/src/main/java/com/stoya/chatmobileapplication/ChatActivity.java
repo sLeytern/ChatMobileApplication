@@ -7,18 +7,33 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.stoya.chatmobileapplication.model.ChatMessageModel;
+import com.stoya.chatmobileapplication.model.ChatRoomModel;
 import com.stoya.chatmobileapplication.model.UserModel;
 import com.stoya.chatmobileapplication.utils.AndroidUtil;
+import com.stoya.chatmobileapplication.utils.FirebaseUtil;
+
+import java.lang.reflect.Array;
+import com.google.firebase.Timestamp;
+import java.util.Arrays;
 
 public class ChatActivity extends AppCompatActivity {
 
     UserModel otherUser;
+    String chatRoomId;
+    ChatRoomModel chatRoomModel;
     EditText messageInput;
     ImageButton sendMessageBtn;
     ImageButton backBtn;
@@ -28,7 +43,6 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_chat);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -39,6 +53,7 @@ public class ChatActivity extends AppCompatActivity {
         //
 
         otherUser = AndroidUtil.getUserModelFromIntent(getIntent());
+        chatRoomId = FirebaseUtil.getChatRoomId(FirebaseUtil.currentUserId(), otherUser.getUserId());
 
         messageInput = findViewById(R.id.chat_message_input);
         sendMessageBtn = findViewById(R.id.message_send_btn);
@@ -51,5 +66,49 @@ public class ChatActivity extends AppCompatActivity {
         });
         otherUsername.setText(otherUser.getUsername());
 
+        sendMessageBtn.setOnClickListener(( e -> {
+            String message = messageInput.getText().toString().trim();
+            if(message.isEmpty())
+                return;
+            sendMessageToUser(message);
+        }));
+
+        getOrCreateChatRoomModel();
+
+    }
+
+    void sendMessageToUser(String message) {
+
+        chatRoomModel.setLastMessageTimestamp(Timestamp.now());
+        chatRoomModel.setLastMessageSenderId(FirebaseUtil.currentUserId());
+        FirebaseUtil.getChatRoomReference(chatRoomId).set(chatRoomModel);
+
+        ChatMessageModel chatMessageModel = new ChatMessageModel(message, FirebaseUtil.currentUserId(), Timestamp.now());
+        FirebaseUtil.getChatRoomMessageReference(chatRoomId).add(chatMessageModel)
+                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                        if(task.isSuccessful()) {
+                            messageInput.setText("");
+                        }
+                    }
+                });
+    }
+
+    void getOrCreateChatRoomModel() {
+        FirebaseUtil.getChatRoomReference(chatRoomId).get().addOnCompleteListener(task -> {
+           if(task.isSuccessful()){
+               chatRoomModel = task.getResult().toObject(ChatRoomModel.class);
+               if(chatRoomModel==null){
+                   chatRoomModel = new ChatRoomModel(
+                           chatRoomId,
+                           Arrays.asList(FirebaseUtil.currentUserId(), otherUser.getUserId()),
+                           Timestamp.now(),
+                           ""
+                   );
+                   FirebaseUtil.getChatRoomReference(chatRoomId).set(chatRoomModel);
+               }
+           }
+        });
     }
 }
