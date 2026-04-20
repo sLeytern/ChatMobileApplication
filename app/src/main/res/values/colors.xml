@@ -4,6 +4,8 @@
     <color name="Secondary">#E3E9DC</color>
     <color name="Tertiary">#E85D04</color>
     <color name="accent">#FF8A3D</color>
+    <color name="receiver">#FBB270</color>
+    <color name="sender">#EFE5DA</color>
     <color name="textPrimary">#2D241E</color>
     <color name="textSecondary">#8D7B6D</color>
     <color name="textTertiary">#F8F3EE</color>
