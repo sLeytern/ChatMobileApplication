@@ -54,6 +54,7 @@ public class LoginUsernameActivity extends AppCompatActivity {
             loginUsername.setError("Username length should be at least 4 characters");
             return;
         }
+
         if(userModel != null) {
             userModel.setUsername(username);
         }

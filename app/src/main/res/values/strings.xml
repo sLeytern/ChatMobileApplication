@@ -2,6 +2,8 @@
     <string name="app_name">Chatify</string>
     <string name="chats">Chats</string>
     <string name="profile">Profile</string>
+    <string name="update_profile">Update profile</string>
+    <string name="logout">Logout</string>
     <string name="search_user">Search user</string>
     <string name="username">Username</string>
 </resources>
