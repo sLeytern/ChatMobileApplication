@@ -2,6 +2,7 @@ package com.stoya.chatmobileapplication.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,14 @@ public class SearchUserRecyclerAdapter extends FirestoreRecyclerAdapter<UserMode
         if(model.getUserId().equals(FirebaseUtil.currentUserId())) {
             holder.usernameText.setText(model.getUsername()+" (Me)");
         }
+
+        FirebaseUtil.getOtherProfilePicStorageRef(model.getUserId()).getDownloadUrl()
+                .addOnCompleteListener( e -> {
+                    if(e.isSuccessful()) {
+                        Uri uri = e.getResult();
+                        AndroidUtil.setProfilePic(context, uri, holder.profilePicture);
+                    }
+                });
 
         holder.itemView.setOnClickListener( e -> {
             // Навигация към чат

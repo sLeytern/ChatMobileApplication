@@ -4,7 +4,7 @@
     <selectionStates>
       <SelectionState runConfigName="Chtify">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2026-04-20T14:15:17.371422900Z">
+        <DropdownSelection timestamp="2026-04-24T09:17:55.123440600Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\stoya\.android\avd\Pixel_5.avd" />

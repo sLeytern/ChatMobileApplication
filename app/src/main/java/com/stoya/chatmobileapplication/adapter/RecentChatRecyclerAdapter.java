@@ -2,6 +2,7 @@ package com.stoya.chatmobileapplication.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,8 +36,18 @@ public class RecentChatRecyclerAdapter extends FirestoreRecyclerAdapter<ChatRoom
         FirebaseUtil.getOtherUserFromChatRoom(model.getUserIds())
                 .get().addOnCompleteListener(task -> {
                     if(task.isSuccessful()) {
+
                         boolean lastMessageSentByMe = model.getLastMessageSenderId().equals(FirebaseUtil.currentUserId());
                         UserModel otherUserModel = task.getResult().toObject(UserModel.class);
+
+                        FirebaseUtil.getOtherProfilePicStorageRef(otherUserModel.getUserId()).getDownloadUrl()
+                                .addOnCompleteListener( e -> {
+                                    if(e.isSuccessful()) {
+                                        Uri uri = e.getResult();
+                                        AndroidUtil.setProfilePic(context, uri, holder.profilePicture);
+                                    }
+                                });
+
                         holder.usernameText.setText(otherUserModel.getUsername());
                         if(lastMessageSentByMe)
                             holder.lastMessageText.setText("You : "+model.getLastMessage());

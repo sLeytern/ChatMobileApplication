@@ -15,9 +15,8 @@
         android:layout_width="160dp"
         android:layout_height="160dp"
         android:background="@drawable/circular_bg"
-        android:backgroundTint="@color/receiver"
+        android:backgroundTint="@color/Secondary"
         android:src="@drawable/person_icon"
-        app:tint="@color/divider"
         android:scaleType="centerCrop"
         android:layout_marginBottom="48dp"
         android:id="@+id/profile_image_view"/>
@@ -57,10 +56,11 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/receiver"
+            android:backgroundTint="@color/Secondary"
             android:gravity="center"
             android:text="@string/update_profile"
-            android:textSize="8pt"
+            android:textColor="@color/textPrimary"
+            android:textSize="18sp"
             android:id="@+id/update_profile_btn"/>
 
     </LinearLayout>
@@ -69,6 +69,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/logout"
+        android:textColor="@color/black"
         android:layout_marginTop="10dp"
         android:id="@+id/logout_btn"/>
 

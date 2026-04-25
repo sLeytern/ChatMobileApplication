@@ -37,9 +37,6 @@ android {
 }
 
 dependencies {
-    implementation(platform("com.google.firebase:firebase-bom:34.11.0"))
-    implementation("com.google.firebase:firebase-firestore")
-    implementation("com.google.firebase:firebase-auth")
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
@@ -49,5 +46,11 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     implementation("com.hbb20:ccp:2.5.0")
+    implementation(platform("com.google.firebase:firebase-bom:34.11.0"))
+    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-auth")
     implementation("com.firebaseui:firebase-ui-firestore:10.0.0-beta02")
+    implementation("com.github.dhaval2404:imagepicker:2.1")
+    implementation("com.github.bumptech.glide:glide:5.0.7")
+    implementation("com.google.firebase:firebase-storage:22.0.1")
 }
