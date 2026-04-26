@@ -42,6 +42,7 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.firebase.firestore)
+    implementation(libs.firebase.messaging)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -53,4 +54,5 @@ dependencies {
     implementation("com.github.dhaval2404:imagepicker:2.1")
     implementation("com.github.bumptech.glide:glide:5.0.7")
     implementation("com.google.firebase:firebase-storage:22.0.1")
+    implementation("com.google.firebase:firebase-messaging:25.0.1")
 }

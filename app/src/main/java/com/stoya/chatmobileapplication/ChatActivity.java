@@ -3,6 +3,7 @@ package com.stoya.chatmobileapplication;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -63,6 +64,7 @@ public class ChatActivity extends AppCompatActivity {
         //
 
         otherUser = AndroidUtil.getUserModelFromIntent(getIntent());
+        Log.i("Other user token", otherUser.getFcmToken());
         chatRoomId = FirebaseUtil.getChatRoomId(FirebaseUtil.currentUserId(), otherUser.getUserId());
 
         messageInput = findViewById(R.id.chat_message_input);
