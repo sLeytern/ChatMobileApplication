@@ -3,11 +3,11 @@
   <component name="deploymentTargetSelector">
     <selectionStates>
       <SelectionState runConfigName="Chtify">
-        <option name="selectionMode" value="DIALOG" />
-        <DropdownSelection timestamp="2026-04-26T10:26:27.848270400Z">
+        <option name="selectionMode" value="DROPDOWN" />
+        <DropdownSelection timestamp="2026-05-10T09:35:59.985897500Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\stoya\.android\avd\Pixel_5_2.avd" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\stoya\.android\avd\Pixel_5.avd" />
             </handle>
           </Target>
         </DropdownSelection>
