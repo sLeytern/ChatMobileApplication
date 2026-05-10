@@ -61,10 +61,11 @@ public class ChatActivity extends AppCompatActivity {
             return insets;
         });
 
-        //
 
+        // Взимаме данните за потребителя, с когото ще си пишем
         otherUser = AndroidUtil.getUserModelFromIntent(getIntent());
         Log.i("Other user token", otherUser.getFcmToken());
+        // Създаваме еднакво id на чат стаята и за двамата потребители
         chatRoomId = FirebaseUtil.getChatRoomId(FirebaseUtil.currentUserId(), otherUser.getUserId());
 
         messageInput = findViewById(R.id.chat_message_input);
@@ -74,6 +75,7 @@ public class ChatActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.chat_recycler_view);
         imageView = findViewById(R.id.profile_picture_image_view);
 
+        // Зареждаме профилната снимка на другия потребител от Firebase Storage
         FirebaseUtil.getOtherProfilePicStorageRef(otherUser.getUserId()).getDownloadUrl()
                 .addOnCompleteListener( e -> {
                     if(e.isSuccessful()) {
@@ -87,6 +89,7 @@ public class ChatActivity extends AppCompatActivity {
         });
         otherUsername.setText(otherUser.getUsername());
 
+        // При натискане на бутона взимаме текста и го изпращаме като съобщение
         sendMessageBtn.setOnClickListener(( e -> {
             String message = messageInput.getText().toString().trim();
             if(message.isEmpty())
@@ -99,7 +102,9 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     void setupChatRecyclerView() {
+        // Настройваме RecyclerView, който показва всички съобщения в текущата чат стая
 
+        // Взимаме съобщенията от Firestore и ги подреждаме по време
         Query query = FirebaseUtil.getChatRoomMessageReference(chatRoomId)
                 .orderBy("timestamp", Query.Direction.DESCENDING);
 
@@ -112,6 +117,7 @@ public class ChatActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(adapter);
         adapter.startListening();
+        // Когато се добави ново съобщение, скролваме към последния ред
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
@@ -122,12 +128,15 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     void sendMessageToUser(String message) {
+        // Функция за записване на ново съобщение в Firestore
 
+        // Обновяваме последното съобщение в чат стаята за списъка с последни чатове
         chatRoomModel.setLastMessageTimestamp(Timestamp.now());
         chatRoomModel.setLastMessageSenderId(FirebaseUtil.currentUserId());
         chatRoomModel.setLastMessage(message);
         FirebaseUtil.getChatRoomReference(chatRoomId).set(chatRoomModel);
 
+        // Създаваме модел на съобщението с текст, senderId и време на изпращане
         ChatMessageModel chatMessageModel = new ChatMessageModel(message, FirebaseUtil.currentUserId(), Timestamp.now());
         FirebaseUtil.getChatRoomMessageReference(chatRoomId).add(chatMessageModel)
                 .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
@@ -141,6 +150,7 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     void getOrCreateChatRoomModel() {
+        // Проверяваме дали вече има чат стая между двамата потребители, ако няма - създаваме я
         FirebaseUtil.getChatRoomReference(chatRoomId).get().addOnCompleteListener(task -> {
            if(task.isSuccessful()){
                chatRoomModel = task.getResult().toObject(ChatRoomModel.class);

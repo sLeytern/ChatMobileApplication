@@ -49,6 +49,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Подготвяме launcher, който приема избраната профилна снимка
         imagePickLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                      if(result.getResultCode() == Activity.RESULT_OK) {
@@ -71,11 +72,13 @@ public class ProfileFragment extends Fragment {
         updateProfileBtn = view.findViewById(R.id.update_profile_btn);
         logoutBtn = view.findViewById(R.id.logout_btn);
 
+        // Зареждаме текущите данни на профила от Firebase
         getUserData();
         updateProfileBtn.setOnClickListener( e -> {
             updateBtnClick();
         });
 
+        // При logout изтриваме token-а и излизаме от Firebase профила
         logoutBtn.setOnClickListener( e -> {
             FirebaseMessaging.getInstance().deleteToken()
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -91,6 +94,7 @@ public class ProfileFragment extends Fragment {
                     });
         });
 
+        // При натискане върху снимката отваряме ImagePicker за избор на нова снимка
         profilePic.setOnClickListener( e -> {
             ImagePicker.with(this).cropSquare().compress(512).maxResultSize(512, 512)
                     .createIntent(new Function1<Intent, Unit>() {
@@ -106,6 +110,7 @@ public class ProfileFragment extends Fragment {
     }
 
     void updateBtnClick() {
+        // Проверяваме въведеното име и подготвяме обновяване на профила
         String newUsername = loginUsername.getText().toString();
         if(newUsername.isEmpty() || newUsername.length() <= 3) {
             loginUsername.setError("Username length should be at least 4 characters");
@@ -114,10 +119,12 @@ public class ProfileFragment extends Fragment {
 
         currentUserModel.setUsername(newUsername);
 
+        // Ако е избрана нова снимка, първо я качваме във Firebase Storage
         if (selectedImageUri != null) {
             FirebaseUtil.getCurrentProfilePicStorageRef().putFile(selectedImageUri)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
+                            // След успешно качване на снимката обновяваме и данните във Firestore
                             updateToFirestore();
                         }
                         else {
@@ -131,6 +138,7 @@ public class ProfileFragment extends Fragment {
     }
 
     void updateToFirestore() {
+        // Записваме обновения UserModel в документа на текущия потребител
         FirebaseUtil.currentUserDetails().set(currentUserModel)
                 .addOnCompleteListener(task -> {
                     if(task.isSuccessful()) {
@@ -143,6 +151,7 @@ public class ProfileFragment extends Fragment {
     }
 
     void getUserData() {
+        // Взимаме профилната снимка от Storage и останалите данни от Firestore
 
         FirebaseUtil.getCurrentProfilePicStorageRef().getDownloadUrl()
                         .addOnCompleteListener( task -> {

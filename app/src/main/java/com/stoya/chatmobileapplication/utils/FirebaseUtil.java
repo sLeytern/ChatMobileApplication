@@ -14,6 +14,7 @@ import java.util.List;
 
 public class FirebaseUtil {
 
+    // Връща uid-то на текущо логнатия потребител
     public static String currentUserId() {
         return FirebaseAuth.getInstance().getUid();
 
@@ -26,6 +27,7 @@ public class FirebaseUtil {
         return false;
     }
 
+    // Връща документа на текущия потребител от колекцията users
     public static DocumentReference currentUserDetails() {
         return FirebaseFirestore.getInstance().collection("users").document(currentUserId());
     }
@@ -42,6 +44,7 @@ public class FirebaseUtil {
         return getChatRoomReference(chatRoomId).collection("chats");
     }
 
+    // Прави еднакво id за чат стаята, независимо кой потребител започва разговора
     public static String getChatRoomId(String userId1, String userId2) {
         if(userId1.hashCode() < userId2.hashCode()) {
             return userId1+"_"+userId2;
@@ -55,6 +58,7 @@ public class FirebaseUtil {
         return FirebaseFirestore.getInstance().collection("chatrooms");
     }
 
+    // От двата userId-та в чат стаята връща документа на другия потребител
     public static DocumentReference getOtherUserFromChatRoom(List<String> userIds) {
         if(userIds.get(0).equals(FirebaseUtil.currentUserId())) {
             return allUserCollectionReference().document(userIds.get(1));
@@ -72,11 +76,13 @@ public class FirebaseUtil {
         FirebaseAuth.getInstance().signOut();
     }
 
+    // Връща мястото в Storage, където пазим снимката на текущия потребител
     public static StorageReference getCurrentProfilePicStorageRef() {
         return FirebaseStorage.getInstance().getReference().child("profile_pic")
                 .child(FirebaseUtil.currentUserId());
     }
 
+    // Връща мястото в Storage, където пазим снимката на друг потребител
     public static StorageReference getOtherProfilePicStorageRef(String otherUserId) {
         return FirebaseStorage.getInstance().getReference().child("profile_pic")
                 .child(otherUserId);

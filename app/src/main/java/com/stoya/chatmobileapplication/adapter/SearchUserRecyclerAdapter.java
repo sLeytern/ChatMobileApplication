@@ -31,10 +31,12 @@ public class SearchUserRecyclerAdapter extends FirestoreRecyclerAdapter<UserMode
     protected void onBindViewHolder(@NonNull UserModelViewHolder holder, int position, @NonNull UserModel model) {
         holder.usernameText.setText(model.getUsername());
         holder.phoneText.setText(model.getPhone());
+        // Ако намереният потребител сме ние, добавяме (Me) до името
         if(model.getUserId().equals(FirebaseUtil.currentUserId())) {
             holder.usernameText.setText(model.getUsername()+" (Me)");
         }
 
+        // Зареждаме профилната снимка на намерения потребител
         FirebaseUtil.getOtherProfilePicStorageRef(model.getUserId()).getDownloadUrl()
                 .addOnCompleteListener( e -> {
                     if(e.isSuccessful()) {
@@ -43,6 +45,7 @@ public class SearchUserRecyclerAdapter extends FirestoreRecyclerAdapter<UserMode
                     }
                 });
 
+        // При избор на потребител отваряме чат с него
         holder.itemView.setOnClickListener( e -> {
             // Навигация към чат
             Intent intent = new Intent(context, ChatActivity.class);

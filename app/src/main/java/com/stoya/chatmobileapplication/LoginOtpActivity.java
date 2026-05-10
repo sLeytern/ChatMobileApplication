@@ -59,10 +59,12 @@ public class LoginOtpActivity extends AppCompatActivity {
         phoneNumber = getIntent().getExtras().getString("phone");
         Toast.makeText(getApplicationContext(), phoneNumber,Toast.LENGTH_LONG).show();
 
+        // Изпращаме първи OTP код към въведения телефонен номер
         sendOtp(phoneNumber, false);
 
         otpConfirm.setOnClickListener(e -> {
             String enteredOtp = otpInput.getText().toString();
+            // Правим credential от въведения OTP код, за да го проверим във Firebase
             PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationCode, enteredOtp);
             signIn(credential);
         });
@@ -74,6 +76,7 @@ public class LoginOtpActivity extends AppCompatActivity {
 
     // Разглеждаме дали
     void sendOtp(String phoneNumber, boolean isResend){
+        // Функция за изпращане или повторно изпращане на OTP код чрез Firebase Authentication
         startRecendTimer();
         PhoneAuthOptions.Builder builder =
                 PhoneAuthOptions.newBuilder(mAuth)
@@ -82,16 +85,19 @@ public class LoginOtpActivity extends AppCompatActivity {
                         .setActivity(this)
                         .setCallbacks(new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                     @Override
+                    // Ако Firebase автоматично разпознае кода, директно логваме потребителя
                     public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
                         signIn(phoneAuthCredential);
                     }
 
                     @Override
+                    // При грешка в OTP процеса показваме съобщение на потребителя
                     public void onVerificationFailed(@NonNull FirebaseException e) {
                         AndroidUtil.showToast(getApplicationContext(), "OTP verification failed");
                     }
 
                     @Override
+                    // Запазваме verificationCode, за да можем после да сравним въведения код
                     public void onCodeSent(@NonNull String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
                         super.onCodeSent(s, forceResendingToken);
                         verificationCode = s;
@@ -100,6 +106,7 @@ public class LoginOtpActivity extends AppCompatActivity {
                     }
                 });
 
+        // Ако потребителят поиска нов код, използваме resendingToken от Firebase
         if(isResend){
             PhoneAuthProvider.verifyPhoneNumber(builder.setForceResendingToken(resendingToken).build());
         }

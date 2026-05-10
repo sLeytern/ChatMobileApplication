@@ -40,7 +40,9 @@ public class LoginUsernameActivity extends AppCompatActivity {
         loginUsername = findViewById(R.id.login_username);
         loginBtn = findViewById(R.id.login_btn);
 
+        // Взимаме телефонния номер, с който потребителят вече е потвърдил OTP кода
         phoneNumber = getIntent().getExtras().getString("phone");
+        // Проверяваме дали вече има записан username за този потребител
         getUsername();
 
         loginBtn.setOnClickListener(e -> {
@@ -49,16 +51,19 @@ public class LoginUsernameActivity extends AppCompatActivity {
     }
 
     void setUsername() {
+        // Функция за записване или обновяване на username в базата данни
         String username = loginUsername.getText().toString();
         if(username.isEmpty() || username.length() <= 3) {
             loginUsername.setError("Username length should be at least 4 characters");
             return;
         }
 
+        // Ако потребителят вече съществува, само променяме името му
         if(userModel != null) {
             userModel.setUsername(username);
         }
         else {
+            // Ако е нов потребител, създаваме нов модел с телефон, username и Firebase uid
             userModel = new UserModel(phoneNumber, username, Timestamp.now(), FirebaseUtil.currentUserId());
         }
 
@@ -66,6 +71,7 @@ public class LoginUsernameActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful()) {
+                    // След успешен запис отваряме главния екран на приложението
                     Intent intent = new Intent(LoginUsernameActivity.this, MainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
@@ -75,6 +81,7 @@ public class LoginUsernameActivity extends AppCompatActivity {
     }
 
     void getUsername() {
+        // Четем данните на текущия потребител от Firestore
         FirebaseUtil.currentUserDetails().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {

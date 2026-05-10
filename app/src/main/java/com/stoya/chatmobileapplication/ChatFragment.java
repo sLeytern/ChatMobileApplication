@@ -37,6 +37,8 @@ public class ChatFragment extends Fragment {
     }
 
     void setupRecyclerView() {
+        // Настройваме списъка с последните чатове на текущия потребител
+        // Търсим само чат стаите, в които участва текущият userId
         Query query = FirebaseUtil.allChatRoomCollectionReference()
                 .whereArrayContains("userIds", FirebaseUtil.currentUserId())
                 .orderBy("lastMessageTimestamp", Query.Direction.DESCENDING);
@@ -44,6 +46,7 @@ public class ChatFragment extends Fragment {
         FirestoreRecyclerOptions<ChatRoomModel> options = new FirestoreRecyclerOptions.Builder<ChatRoomModel>()
                 .setQuery(query, ChatRoomModel.class).build();
 
+        // Свързваме Firestore заявката с RecyclerView чрез adapter
         adapter = new RecentChatRecyclerAdapter(options, getContext());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);

@@ -29,11 +29,13 @@ public class ChatRecyclerAdapter extends FirestoreRecyclerAdapter<ChatMessageMod
 
     @Override
     protected void onBindViewHolder(@NonNull ChatModelViewHolder holder, int position, @NonNull ChatMessageModel model) {
+        // Ако съобщението е изпратено от текущия потребител, го показваме вдясно
         if(model.getSenderId().equals(FirebaseUtil.currentUserId())) {
             holder.leftChatLayout.setVisibility(View.GONE);
             holder.rightChatLayout.setVisibility(View.VISIBLE);
             holder.rightChatTextview.setText(model.getMessage());
         }
+        // Ако съобщението е от другия потребител, го показваме вляво
         else  {
             holder.leftChatLayout.setVisibility(View.VISIBLE);
             holder.rightChatLayout.setVisibility(View.GONE);

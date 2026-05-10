@@ -33,6 +33,7 @@ public class RecentChatRecyclerAdapter extends FirestoreRecyclerAdapter<ChatRoom
 
     @Override
     protected void onBindViewHolder(@NonNull ChatRoomModelViewHolder holder, int position, @NonNull ChatRoomModel model) {
+        // От чат стаята взимаме другия потребител, за да покажем неговото име и снимка
         FirebaseUtil.getOtherUserFromChatRoom(model.getUserIds())
                 .get().addOnCompleteListener(task -> {
                     if(task.isSuccessful()) {
@@ -40,6 +41,7 @@ public class RecentChatRecyclerAdapter extends FirestoreRecyclerAdapter<ChatRoom
                         boolean lastMessageSentByMe = model.getLastMessageSenderId().equals(FirebaseUtil.currentUserId());
                         UserModel otherUserModel = task.getResult().toObject(UserModel.class);
 
+                        // Зареждаме профилната снимка на другия потребител от Storage
                         FirebaseUtil.getOtherProfilePicStorageRef(otherUserModel.getUserId()).getDownloadUrl()
                                 .addOnCompleteListener( e -> {
                                     if(e.isSuccessful()) {
@@ -55,6 +57,7 @@ public class RecentChatRecyclerAdapter extends FirestoreRecyclerAdapter<ChatRoom
                             holder.lastMessageText.setText(model.getLastMessage());
                         holder.lastMessageTime.setText(FirebaseUtil.timestampToString(model.getLastMessageTimestamp()));
 
+                        // При натискане върху реда отваряме конкретния чат
                         holder.itemView.setOnClickListener( e -> {
                             // Навигация към чат
                             Intent intent = new Intent(context, ChatActivity.class);

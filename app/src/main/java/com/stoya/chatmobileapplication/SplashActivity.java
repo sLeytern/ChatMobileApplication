@@ -27,6 +27,7 @@ public class SplashActivity extends AppCompatActivity {
             return insets;
         });
 
+        // Проверяваме дали приложението е отворено чрез натискане върху notification
         if(getIntent().getExtras() != null) {
             String userId = getIntent().getExtras().getString("userId");
             FirebaseUtil.allUserCollectionReference().document(userId).get()
@@ -34,10 +35,12 @@ public class SplashActivity extends AppCompatActivity {
                         if(e.isSuccessful()) {
                             UserModel model = e.getResult().toObject(UserModel.class);
 
+                            // Първо отваряме главния екран, за да има основа под ChatActivity
                             Intent mainIntent = new Intent(this, MainActivity.class);
                             mainIntent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                             startActivity(mainIntent);
 
+                            // Подаваме потребителя от notification-а и отваряме директно неговия чат
                             Intent intent = new Intent(this, ChatActivity.class);
                             AndroidUtil.passUserModelAsIntent(intent, model);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -50,12 +53,14 @@ public class SplashActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     // Взимаме отговора на булевата променлива дали имаме данните на uid-то и ако го има значи сме се логнали и влизаме в приложението
+                    // Проверяваме дали вече има логнат потребител във Firebase
                     if(FirebaseUtil.isLoggedIn()) {
                         startActivity(new Intent(SplashActivity.this, MainActivity.class));
 
                     }
                     // Ако не се показват данни значи не е логнат потребителя, следователно ни ориентира към екрана за логин по тел. номер
                     else {
+                        // Ако няма логнат потребител, започваме от екрана за телефонен номер
                         startActivity(new Intent(SplashActivity.this, LoginPhoneNumberActivity.class));
                     }
                     finish();

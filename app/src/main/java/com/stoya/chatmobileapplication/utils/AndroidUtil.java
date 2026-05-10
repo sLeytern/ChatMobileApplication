@@ -11,10 +11,12 @@ import com.bumptech.glide.request.RequestOptions;
 import com.stoya.chatmobileapplication.model.UserModel;
 
 public class AndroidUtil {
+    // Семпла функция за показване на кратко съобщение на екрана
     public static void showToast(Context context, String message){
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 
+    // Подаваме данните на потребител към друго Activity чрез Intent
     public static void passUserModelAsIntent (Intent intent, UserModel model) {
         intent.putExtra("username", model.getUsername());
         intent.putExtra("phone", model.getPhone());
@@ -23,6 +25,7 @@ public class AndroidUtil {
 
     }
 
+    // Взимаме потребителските данни обратно от Intent и ги връщаме като UserModel
     public static  UserModel getUserModelFromIntent (Intent intent) {
         UserModel userModel = new UserModel();
         userModel.setUsername(intent.getStringExtra("username"));
@@ -32,6 +35,7 @@ public class AndroidUtil {
         return userModel;
     }
 
+    // С Glide зареждаме снимката и я правим кръгла
     public static void setProfilePic(Context context, Uri imageUri, ImageView imageView) {
         Glide.with(context).load(imageUri).apply(RequestOptions.circleCropTransform()).into(imageView);
     }

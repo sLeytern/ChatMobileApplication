@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        // Създаваме фрагментите, които ще се показват в главния екран
         chatFragment = new ChatFragment();
         profileFragment = new ProfileFragment();
 
@@ -69,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void getFCMToken() {
+        // Взимаме FCM token-а на устройството и го записваме към профила на потребителя
         FirebaseMessaging.getInstance().getToken().addOnCompleteListener( e -> {
             if(e.isSuccessful()) {
                 String token = e.getResult();

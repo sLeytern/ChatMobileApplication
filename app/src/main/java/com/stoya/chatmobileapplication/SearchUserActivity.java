@@ -64,6 +64,7 @@ public class SearchUserActivity extends AppCompatActivity {
     }
 
     void setupSearchRecyclerView(String searchTerm) {
+        // Правим заявка към Firestore за потребители, чието име започва с въведения текст
         Query query = FirebaseUtil.allUserCollectionReference()
                 .whereGreaterThanOrEqualTo("username", searchTerm)
                 .whereLessThanOrEqualTo("username", searchTerm+'\uf8ff');
@@ -71,6 +72,7 @@ public class SearchUserActivity extends AppCompatActivity {
         FirestoreRecyclerOptions<UserModel> options = new FirestoreRecyclerOptions.Builder<UserModel>()
                 .setQuery(query, UserModel.class).build();
 
+        // Показваме намерените потребители в RecyclerView
         adapter = new SearchUserRecyclerAdapter(options, getApplicationContext());
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
